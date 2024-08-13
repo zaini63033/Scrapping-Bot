@@ -2,23 +2,22 @@ from selenium import webdriver
 from selenium.common.exceptions import NoAlertPresentException, UnexpectedAlertPresentException
 import search
 import scrap
-from constants import COUNTIES, url, TABS
+import save  # Import the new save module
+from constants import COUNTIES, url
+import os
 
 def handle_alert(driver):
     try:
-        # Switch to the alert and accept it
         alert = driver.switch_to.alert
         alert.accept()
         print("Alert handled and accepted.")
     except NoAlertPresentException:
-        # No alert is present
         pass
 
-def crawl(driver):
-    count_name_index = 0  # Keep track of which county we are processing
+def crawl(driver, TABS, START_DATE, END_DATE, SAVE_PATH):
+    count_name_index = 0
 
     while count_name_index < len(COUNTIES):
-        # Open up to TABS number of tabs
         tab_handles = []
         for _ in range(min(TABS, len(COUNTIES) - count_name_index)):
             driver.execute_script("window.open('');")
@@ -29,31 +28,17 @@ def crawl(driver):
             if count_name_index >= len(COUNTIES):
                 break
 
-        # Perform the search in each tab
         for i, handle in enumerate(tab_handles):
             driver.switch_to.window(handle)
             county_name = COUNTIES[count_name_index - len(tab_handles) + i]
-            # Perform the search in the current tab
-            search.search(driver, county_name)
+            search.search(driver, county_name, START_DATE, END_DATE)
 
-        # Scrape the data from each tab
         for i, handle in enumerate(tab_handles):
             driver.switch_to.window(handle)
             county_name = COUNTIES[count_name_index - len(tab_handles) + i]
-            # Handle any unexpected alerts before scraping
             handle_alert(driver)
-            # Scrape the data from the results page
-            scrap.scrap(driver, county_name)
-            
-            # Close the tab
-            try:
-                driver.close()
-            except UnexpectedAlertPresentException:
-                # Handle the alert if it appears again during tab close
-                handle_alert(driver)
-                driver.close()
+            results = scrap.scrap(driver)  # Get the results from the scrap function
+            save.save_to_spreadsheet(county_name, results, SAVE_PATH)  # Save the results to a spreadsheet
+            driver.close()
 
-        # Switch back to the original tab
         driver.switch_to.window(driver.window_handles[0])
-        
-        

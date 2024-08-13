@@ -4,7 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import parse
 import re
 
-def scrap(driver, county_name):
+def scrap(driver):
     # Set up WebDriverWait
     wait = WebDriverWait(driver, 10)
     
@@ -13,12 +13,6 @@ def scrap(driver, county_name):
         rows = driver.find_elements(By.XPATH, "//tr")
         
         results = []
-        
-        # Print county name to console and write to file
-        print("County Name: ", county_name, '\n')
-        
-        with open('output.txt', 'a') as f:
-            f.write(f"County Name: {county_name}\n\n")
         
         for row in rows:
             try:
@@ -37,17 +31,6 @@ def scrap(driver, county_name):
                 if not re.match(r'\d{3}-\d{4}-\d{6}', pt61_text) or actual_price > 100:
                     continue
                 
-                # Print details to console
-                print("PT-61: ", pt61_text)
-                print("Sale Date: ", sale_date)
-                print("Actual Price: ", actual_price)
-                
-                # Write details to file
-                with open('output.txt', 'a') as f:
-                    f.write(f"PT-61: {pt61_text}\n")
-                    f.write(f"Sale Date: {sale_date}\n")
-                    f.write(f"Actual Price: {actual_price}\n")
-                
                 # Click the row to open detailed information
                 row.click()
                 
@@ -65,27 +48,9 @@ def scrap(driver, county_name):
                     seller_address = driver.find_element(By.XPATH, "/html/body/form/div[3]/div/div/div/table[3]/tbody/tr[2]/td/span[2]").text.strip()
                     property_address = driver.find_element(By.XPATH, "/html/body/form/div[3]/div/div/div/table[4]/tbody/tr[2]/td[1]/span").text.strip()
                     map_parcel_number = driver.find_element(By.XPATH, "/html/body/form/div[3]/div/div/div/table[4]/tbody/tr[2]/td[3]/span").text.strip()
-
-                    # Print extracted attributes
-                    print("Buyer Name: ", buyer_name)
-                    print("Buyer Address: ", buyer_address)
-                    print("Seller Name: ", seller_name)
-                    print("Seller Address: ", seller_address)
-                    print("Property Address: ", property_address)
-                    print("Map & Parcel Number: ", map_parcel_number)
-                    
-                    # Write extracted attributes to file
-                    with open('output.txt', 'a') as f:
-                        f.write(f"Buyer Name: {buyer_name}\n")
-                        f.write(f"Buyer Address: {buyer_address}\n")
-                        f.write(f"Seller Name: {seller_name}\n")
-                        f.write(f"Seller Address: {seller_address}\n")
-                        f.write(f"Property Address: {property_address}\n")
-                        f.write(f"Map & Parcel Number: {map_parcel_number}\n\n")
                     
                     # Append the results to the list
                     results.append({
-                        "county_name": county_name,
                         "pt61": pt61_text,
                         "sale_date": sale_date,
                         "actual_price": actual_price,
@@ -106,15 +71,12 @@ def scrap(driver, county_name):
                     print(f"Error while handling frame/modal: {e}")
                     driver.switch_to.default_content()  # Ensure we return to default content in case of error
                 
-                print('\n')
-                
             except Exception as e:
                 # Continue to the next row if any element is not found in the current row
                 continue
         
-        print('\n')
-        return True
+        return results
     
     except Exception as e:
         print(f"Error: {e}")
-        return False
+        return []

@@ -5,12 +5,6 @@ username = "sellyourgeorgiahouse"  # replace with your actual username
 
 password = "Strvl12#"  # replace with your actual password
 
-TABS = 30
-
-START_DATE = "07/29/2024"
-
-END_DATE = "08/04/2024"
-
 COUNTIES = [
     "BIBB", "CHATHAM", "CHEROKEE", "CLARKE", "CLAYTON", "COBB", "DADE",
     "DEKALB", "DOUGHERTY", "DOUGLAS", "FAYETTE", "FORSYTH", "FULTON",
