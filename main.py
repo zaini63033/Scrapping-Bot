@@ -1,7 +1,7 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QFormLayout, QLabel, QDateEdit, QSpinBox, QPushButton, QFileDialog
 from PyQt6.QtCore import Qt, QDate
-import init  # Import the refactored input.py
+import init 
 
 class DateTabInputApp(QWidget):
     def __init__(self):

@@ -8,7 +8,7 @@ password = "Strvl12#"  # replace with your actual password
 COUNTIES = [
     "BIBB", "CHATHAM", "CHEROKEE", "CLARKE", "CLAYTON", "COBB", "DADE",
     "DEKALB", "DOUGHERTY", "DOUGLAS", "FAYETTE", "FORSYTH", "FULTON",
-    "GLYNN","GWINNETT", "HALL", "HENRY", "HOUSTON", "LOWNDES", "NEWTON", 
+    "GLYNN","GWINNETT", "HALL", "HENRY", "HOUSTON", "LOWNDES", "NEWTON", "MUSCOGEE",
     "RICHMOND", "ROCKDALE", "SPALDING"
 ]
 

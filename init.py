@@ -1,5 +1,6 @@
 import time
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import login
 import crawl
 from constants import url
@@ -7,8 +8,14 @@ from constants import url
 def run_scraping_bot(tabs, start_date, end_date, save_path):
     start_time = time.time()
 
-    driver = webdriver.Chrome()
-    driver.maximize_window()
+    # Set Chrome options
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Run Chrome in headless mode
+    chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
+    chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+    chrome_options.add_argument("--window-size=1920x1080")  # Set window size to avoid detection issues
+
+    driver = webdriver.Chrome(options=chrome_options)
     driver.get(url)
 
     # Login
@@ -21,5 +28,7 @@ def run_scraping_bot(tabs, start_date, end_date, save_path):
     elapsed_time = end_time - start_time
     print(f"\nRuntime: {elapsed_time} seconds")
 
-    time.sleep(100)
     driver.quit()
+
+# Example usage (replace with your actual parameters)
+# run_scraping_bot(tabs, start_date, end_date, save_path)
